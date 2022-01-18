@@ -17,12 +17,19 @@ public class AlbertaCovid19SummaryDataService {
     private List<AlbertaCovid19SummaryData> dataList = new ArrayList<>();
 
     public AlbertaCovid19SummaryDataService() throws IOException {
+        dataList = localCsvData();
+    }// eo public AlbertaCovid19SummaryDataService() throws IOException
+
+    private List<AlbertaCovid19SummaryData> localCsvData() throws IOException
+    {
+        List<AlbertaCovid19SummaryData> dataList = new ArrayList<>();
+
         try (var reader = new BufferedReader(new InputStreamReader(
                 getClass().getResourceAsStream("/data/covid-19-alberta-statistics-summary-data.csv"))))
         {
             // Dynamic delimiter that splits results by commas surrounded by quotations.
             // This is important in the case that there are commas in the string
-            final var delimiter = ",";
+            final var delimiter = ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)";;
             String line;
             // Skip the first line as it contains column headings
             reader.readLine();
@@ -64,6 +71,8 @@ public class AlbertaCovid19SummaryDataService {
                 dataList.add(lineData);
             }
         }
-    }// eo public AlbertaCovid19SummaryDataService() throws IOException
+
+        return dataList;
+    }// eo localCsvData
 }
 
